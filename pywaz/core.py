@@ -17,25 +17,26 @@ class Window(object):
    
 class SceneManager(object):
     def __init__(self):
-        self._scenes_queue = []
+        self._scenes_dict = {}
+        self._current_scene = None
         
-    def set_scene(self, scene):
-        self._scenes_queue.push(scene)
+    def set_scene(self, dict):
+        self._scenes_dict.update(dict)
     
-    def set_scenes(self, queue):
-        self._scenes_queue = queue
+    def set_scenes(self, dict):
+        self._scenes_dict = dict
         
     def change_scene(self, key):
-        self._scenes_queue.pop(0)
+        self._current_scene = self._scenes_dict[key]
         
     @property
     def current_scene(self):
         if self.is_empty():
             return None
-        return self._scenes_queue[0]
+        return self._current_scene
     
     def is_empty(self):
-        return len(self._scenes_queue) == 0
+        return not self._current_scene
         
     def act(self):
         if not self.is_empty():
