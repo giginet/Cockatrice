@@ -1,6 +1,10 @@
-#Sat Jan 15 02:31:46 JST 2011
+#Sat Jan 15 03:16:36 JST 2011
 eclipse.preferences.version=1
 encoding//pywaz/graphic.py=utf-8
+encoding//pywaz/utils.py=utf-8
+encoding/character.py=utf-8
+encoding/god.py=utf-8
 encoding/main.py=utf-8
 encoding/map.py=utf-8
 encoding/scenes.py=utf-8
+encoding/trap.py=utf-8

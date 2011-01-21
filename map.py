@@ -18,7 +18,8 @@ class Map(object):
         pass
     
 class Chip(Image):
-    u"""チップの抽象クラス"""
+    u"""チップの基底クラス"""
+    self._can_walk = True
     self._can_through = True
     self._name = u"上層チップ"
     self._path = u'resources/image/chip.png'
@@ -33,13 +34,21 @@ class Chip(Image):
         
 class Wall(Chip):
     u"""壁クラス"""
+    self._can_walk = False
     self._can_through = False
     self._name = u'壁'
     self._path = u'resources/image/wall.png'
           
 class Floor(Chip):
     u"""床クラス"""
-    self.__can_through = True
-    self.__name = u'床'
+    self._can_walk = True
+    self._can_through = True
+    self._name = u'床'
     self._path = u'resources/image/floor.png'
     
+class Water(Chip):
+    u"""水路クラス"""
+    self._can_walk = False
+    self._can_through = True
+    self._name = u'水'
+    self._path = u'resouces/image/water.png'
