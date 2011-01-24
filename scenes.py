@@ -5,6 +5,8 @@ from pywaz.core import *
 from pywaz.input import *
 from pywaz.utils import *
 from pywaz.graphic import *
+from map import *
+
 
 class TitleScene(Scene):
     def __init__(self):
@@ -20,11 +22,27 @@ class TitleScene(Scene):
 
 class MainScene(Scene):
     def __init__(self):
-        self.image = Image(100,100,100,100,u"resources/image/kawaz.png")
+        #テスト用マップ
+        self.map = Map((
+                    (1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
+                    (1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,2,2,2,2,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,2,2,2,2,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,2,2,2,2,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1),
+                    (1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1),
+                    (1,0,0,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,0,0,1),
+                    (1,0,0,0,0,0,0,0,1),
+                    (1,1,1,1,1,1,1,1,1)
+        ))
         
     def act(self):
-        if Mouse.is_press("RIGHT"):
-            Game.get_scene_manager().change_scene('main')
+        self.map.act()
         
     def render(self):
-        self.image.render()
+        self.map.render()

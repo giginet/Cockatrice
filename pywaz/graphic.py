@@ -34,7 +34,6 @@ class Image(Obj):
         super(Image, self).__init__(x,y,w,h)
         self.image = pygame.image.load(path).convert()
         self.rect = self.image.get_rect()
-        print x
         
     def render(self, x=None, y=None):
         super(Image, self).render()
