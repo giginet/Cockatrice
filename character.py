@@ -22,6 +22,9 @@ class Character(Image):
         
     def render(self):
         super(Character, self).render()
+        
+    def get_local_point(self):
+        return self.mx, self.my
     
 class Monster(Character):
     pass
@@ -38,12 +41,4 @@ class Mychara(Human):
         self._stone = False
         
     def act(self):
-        if Key.is_press(K_LEFT):
-            self.x -= 1
-        elif Key.is_press(K_RIGHT):
-            self.x +=1
-                       
-        if Key.is_press(K_UP):
-            self.y -=1
-        elif Key.is_press(K_DOWN):
-            self.y +=1
+        pass

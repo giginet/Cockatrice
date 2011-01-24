@@ -4,7 +4,7 @@ import math
 class Vector(object):
     u"""2Dベクトルを扱うクラス"""
     def __init__(self, x=0, y=0):
-        set(x, y)
+        self.set(x, y)
         
     def set(self, x, y):
         self.x = x
@@ -42,8 +42,8 @@ class Vector(object):
         return self
     
     def scale(self, n):
-        self.x *= v
-        self.y *= v
+        self.x *= n
+        self.y *= n
         return self
         
     def scalar_product(self, v):
@@ -56,7 +56,7 @@ class Vector(object):
         if self.length()==0:
             return Vector(0, 0)
         else:
-            return scale(1/self.length())
+            return self.scale(1/self.length())
         
     def resize(self, size):
         return self.normalize().scale(size)

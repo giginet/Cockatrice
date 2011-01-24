@@ -4,6 +4,7 @@ from pygame.locals import *
 
 from core import *
 import os
+import math
 
 class Obj(object):
     def __init__(self, x=0, y=0, w=100, h=100):
@@ -27,13 +28,25 @@ class Obj(object):
         self.rect.h = self.height
         
     def rotate(self, n):
+        u"""矩形を回転させる（未実装）"""
         self.angle = n
+        
+    def move(self, v):
+        u"""物体を指定したベクトルの分だけ動かす"""
+        self.x += v.x
+        self.y += v.y
+        
+    def hit_test(self, obj):
+        u"""矩形同士の当たり判定を取る"""
+        return (math.abs(self.x - obj.x) < self.width + obj.width) and (math.abs(self.y - obj.y) < self.height + obj.height)
 
 class Image(Obj):
     def __init__(self, x=0 ,y=0 ,w=100, h=100, path=u""):
         super(Image, self).__init__(x,y,w,h)
         self.image = pygame.image.load(path).convert()
         self.rect = self.image.get_rect()
+        self.width = self.rect.width
+        self.height = self.rect.height
         
     def render(self, x=None, y=None):
         super(Image, self).render()
