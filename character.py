@@ -12,22 +12,70 @@ import settings
 
 class Character(MapObject):
     u"""キャラクター抽象クラス"""
-    _path = u"resources/image/player.png" 
+    _path = u"resources/image/human.png"
+    
+    def get_vector(self):
+        u"""移動するベクトルを返す"""
+        return Vector()
     
 class Monster(Character):
     pass
 
 class Human(Character):
-    pass
+    u"""人間の抽象クラス"""
+    _stone = False
+    
+    def is_stone(self):
+        return self._stone
+    
+    def is_mychara(self):
+        return isinstance(self, Mychara)
+    
+    def change_state(self, state):
+        if state=="player":
+            return Mychara(self.mx, self.my)
+        elif state=="stone":
+            return Stone(self.mx, self.my)
+        elif state=="runaway":
+            return Runaway(self.mx, self.my)
+        else:
+            raise ArgumentError
+        
+class Runaway(Human):
+    u"""石化から解かれた人クラス"""
+    _path = u"resources/image/human.png"
+    
+    def get_vector(self):
+        u"""ここにA-star実装するよ！"""
+        return Vector(1,0)
 
+class Stone(Human): 
+    u"""石化している人クラス"""
+    _stone = True
+    _path = u"resources/image/stone.png" 
+    
 class Mychara(Human):
     u"""操作キャラクラス"""
+    _path = u"resources/image/player.png" 
+        
     def __init__(self, mx, my):
         super(Mychara, self).__init__(mx=mx, my=my)
         self.mx = mx
         self.my = my
         self._stone = False
         #self.hit = Rect(self.x+6,self.y+6, 12, 12)
-        
+   
+    def get_vector(self):
+        v = Vector()
+        if Key.is_press(K_LEFT):
+            v.x -= 1
+        elif Key.is_press(K_RIGHT):
+            v.x +=1              
+        if Key.is_press(K_UP):
+            v.y -=1
+        elif Key.is_press(K_DOWN):
+            v.y +=1
+        return v
+    
     def act(self):
         pass

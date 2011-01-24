@@ -9,28 +9,22 @@ import settings
 
 class Map(object):
     u"""全体マップクラス"""
-    def __init__(self, matrix=(())):
+    def __init__(self, matrix=(()), humans=()):
         self.x = 0
         self.y = 0
         self.generate_map(matrix)
-        self.humans = []
         self.my = Mychara(1,1)
-    
+        self.humans = list(humans) + [self.my,]
+        
     def act(self):
-        #キーの入力を取ってキャラを動かす
-        v = Vector()
-        if Key.is_press(K_LEFT):
-            v.x -= 1
-        elif Key.is_press(K_RIGHT):
-            v.x +=1
-                       
-        if Key.is_press(K_UP):
-            v.y -=1
-        elif Key.is_press(K_DOWN):
-            v.y +=1
-        self.my = self._move(self.my,v)
-        self.my.act()
-    
+        #キャラを動かす
+        for i, human in enumerate(self.humans):
+            v = human.get_vector()    
+            human = self._move(human,v)
+            human.act()
+            if self.my.hit_test(human) and human.is_stone():
+                self.humans[i] = human.change_state("runaway")
+            
     def _move(self, obj, v):
         u"""objをvの分だけ移動させる。マップチップとの当たりも取る"""
         v.resize(settings.SPEED)
@@ -74,7 +68,8 @@ class Map(object):
                 chip.render()
         #オブジェクト描画
         
-        self.my.render()
+        for human in self.humans:
+            human.render()
 
     def generate_map(self, matrix):
         u"""生の配列を元にマップを生成する
