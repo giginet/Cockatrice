@@ -10,33 +10,33 @@ class Vector(object):
         self.x = x
         self.y = y
         
-    def add(self, v):
+    def __add__(self, v):
         if not isinstance(v, Vector):
             raise TypeError
         self.x += v.x
         self.y += v.y
         return self
         
-    def sub(self, v):
+    def __sub__(self, v):
         if not isinstance(v, Vector):
             raise TypeError
         self.x -= v.x
         self.y -= v.y
         return self
     
-    def eq(self, v):
+    def __eq__(self, v):
         if not isinstance(v, Vector):
             raise TypeError
         return self.x == v.x and self.y == v.y
     
-    def mul(self, v):
+    def __mul__(self, v):
         if isinstance(v, Vector):
             return scalar_product(v)
         elif isinstance(v, Number):
             return scale(v)
         raise TypeError
     
-    def div(self, n):
+    def __div__(self, n):
         self.x /= n
         self.y /= n
         return self
@@ -62,6 +62,8 @@ class Vector(object):
         return self.normalize().scale(size)
     
     def angle(self):
+        if self.x == 0:
+            return 90
         return Vector.rad_to_deg(math.atan(self.y/self.x))
     
     def rotate(self, deg):
