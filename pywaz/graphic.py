@@ -60,7 +60,7 @@ class Image(Obj):
     def render(self, x=None, y=None):
         super(Image, self).render()
         if x:
-            self.x = x  
+            self.x = x
         if y:
             self.y = y
         Game.get_screen().blit(self.image, self.rect)

@@ -14,12 +14,6 @@ class Character(MapObject):
     u"""キャラクター抽象クラス"""
     _path = u"resources/image/player.png" 
     
-    def render(self):
-        super(Character, self).render()
-        
-    def get_local_point(self):
-        return self.mx, self.my
-    
 class Monster(Character):
     pass
 
@@ -33,6 +27,7 @@ class Mychara(Human):
         self.mx = mx
         self.my = my
         self._stone = False
+        self.hit = Rect(self.x+6,self.y+6, 12, 12)
         
     def act(self):
         pass

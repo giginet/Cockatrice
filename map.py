@@ -28,19 +28,40 @@ class Map(object):
             v.y -=1
         elif Key.is_press(K_DOWN):
             v.y +=1
-        v.resize(settings.SPEED)
-        self._move(self.my,v)
-        
-        self.my.act()    
+        self.my = self._move(self.my,v)
+        self.my.act()
     
     def _move(self, obj, v):
         u"""objをvの分だけ移動させる。マップチップとの当たりも取る"""
+        distance = settings.SPEED
+        x, y = Map.global_to_local(obj.x, obj.y)
+        if v.x > 0:
+            next = self.get_chip(x+1, y)
+            if next:
+                print "---------------------"
+                print next.get_bounds()['xmin']
+                print obj.get_bounds()['xmax']
+                distance = next.get_bounds()['xmin'] - obj.get_bounds()['xmax']
+        elif v.x < 0:
+            next = self.get_chip(x-1, y)
+            if next:
+                distance = next.get_bounds()['xmax'] - obj.get_bounds()['xmin']
+        if abs(distance) < v.x and not next.can_walk():
+            v.x = distance
         
-        
-        p = Map.global_to_local(self.my.x, self.my.y) 
-        current_chip = self.get_chip(p[0],p[1])
-        #if current_chip and not current_chip.can_walk():
-        #    self.my.move(v.reverse())
+        if v.y > 0:
+            next = self.get_chip(x, y+1)
+            if next:
+                distance = next.get_bounds()['ymin'] - obj.get_bounds()['ymax']
+        elif v.y < 0:
+            next = self.get_chip(x, y-1)
+            if next:
+                distance = next.get_bounds()['ymax'] - obj.get_bounds()['ymin']
+        if abs(distance) < v.y and not next.can_walk():
+            v.y = distance
+        v.resize(settings.SPEED)
+        obj.move(v)
+        return obj
         
     
     def render(self):
@@ -67,7 +88,7 @@ class Map(object):
             
     def get_chip(self,x ,y):
         try:
-            return self._map[x][y]
+            return self._map[y][x]
         except:
             return None
     
