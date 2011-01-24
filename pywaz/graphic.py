@@ -4,7 +4,6 @@ from pygame.locals import *
 
 from core import *
 import os
-import math
 
 class Obj(object):
     def __init__(self, x=0, y=0, w=100, h=100):
@@ -17,6 +16,7 @@ class Obj(object):
         self.yscale = 1
         self.alpha = 1
         self.rect = pygame.rect.Rect(x, y, w, h)
+        self.hit = self.rect
         
     def act(self):
         pass
@@ -36,9 +36,18 @@ class Obj(object):
         self.x += v.x
         self.y += v.y
         
+    def set_hit(self, rect):
+        u"""当たり判定用の矩形を適応
+        特に設定しない場合は、見た目と同じ"""
+        self.hit = rect
+    
     def hit_test(self, obj):
-        u"""矩形同士の当たり判定を取る"""
-        return (math.abs(self.x - obj.x) < self.width + obj.width) and (math.abs(self.y - obj.y) < self.height + obj.height)
+        u"""当たり判定用矩形同士の当たり判定を取る"""
+        return (abs(self.hit.x - obj.hit.x) < self.hit.width + obj.hit.width) and (abs(self.hit.y - obj.hit.y) < self.hit.height + obj.hit.height)
+    
+    def get_bounds(self):
+        u"""xmax,ymax,xmin,ymin"""
+        return {'xmin':self.x,'ymin':self.y,'xmax':self.x+self.width,'ymax':self.y+self.height}
 
 class Image(Obj):
     def __init__(self, x=0 ,y=0 ,w=100, h=100, path=u""):
@@ -50,6 +59,10 @@ class Image(Obj):
         
     def render(self, x=None, y=None):
         super(Image, self).render()
+        if x:
+            self.x = x  
+        if y:
+            self.y = y
         Game.get_screen().blit(self.image, self.rect)
         
 class Font(Obj): 

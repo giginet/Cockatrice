@@ -4,12 +4,11 @@ from pygame.locals import *
 from pywaz.utils import *
 from pywaz.graphic import *
 from character import *
+from mapobject import *
+import settings
 
 class Map(object):
     u"""全体マップクラス"""
-    MARGINX = 10
-    MARGINY = 10
-    
     def __init__(self, matrix=(())):
         self.x = 0
         self.y = 0
@@ -29,19 +28,25 @@ class Map(object):
             v.y -=1
         elif Key.is_press(K_DOWN):
             v.y +=1
+        v.resize(settings.SPEED)
+        self._move(self.my,v)
         
-        v.resize(2)
-        self.my.move(v)
-        Map.global_to_local(self.my.x, self.my.y) 
-        #戻す
-        self.my.move(v.reverse())
-
         self.my.act()    
+    
+    def _move(self, obj, v):
+        u"""objをvの分だけ移動させる。マップチップとの当たりも取る"""
+        
+        
+        p = Map.global_to_local(self.my.x, self.my.y) 
+        current_chip = self.get_chip(p[0],p[1])
+        #if current_chip and not current_chip.can_walk():
+        #    self.my.move(v.reverse())
+        
     
     def render(self):
         u"""マップ全体を描画"""
         #マップチップ描画
-        for column in self.map:
+        for column in self._map:
             for chip in column:
                 chip.render()
         #オブジェクト描画
@@ -52,14 +57,20 @@ class Map(object):
         u"""生の配列を元にマップを生成する
         可読性のため、row_matrixは転置行列である"""
         self._raw_matrix = matrix
-        self.map = []
+        self._map = []
         cls = (Floor,Wall,Water)
         for y, row in enumerate(self._raw_matrix):
             column = []
             for x, k in enumerate(row):
                 column.append(cls[k](x,y))
-            self.map.append(column)
+            self._map.append(column)
             
+    def get_chip(self,x ,y):
+        try:
+            return self._map[x][y]
+        except:
+            return None
+    
     @classmethod
     def local_to_global(cls, mx, my):
         pass
@@ -67,31 +78,20 @@ class Map(object):
     @classmethod
     def global_to_local(cls,x ,y):
         u"""全体座標をマップ座標に変換する"""
-        mx = int((x - cls.MARGINX)/Chip.CHIPSIZE)
-        my = int((y - cls.MARGINY)/Chip.CHIPSIZE)
-        return mx, my
+        mx = (x - settings.MARGINX)/settings.CHIPSIZE
+        my = (y - settings.MARGINY)/settings.CHIPSIZE
+        return int(mx), int(my)
     
-class Chip(Image):
+class Chip(MapObject):
     u"""チップの基底クラス"""
-    CHIPSIZE = 24
     _can_walk = True
     _can_through = True
     _name = u"上層チップ"
     _path = u'resources/image/chip.png'
-    CHIPSIZE = 24
     
-    def __init__(self, mx, my):
-        super(Chip, self).__init__(x=mx*self.CHIPSIZE, y=my*self.CHIPSIZE, path=self._path)
-        self.mx = mx
-        self.my = my
-        
     def can_walk(self):
         u"""通行可能かどうかをbooleanで返す"""
-        return self._can_through
-    
-    def render(self):
-        u"""マップチップを描画する"""
-        super(Chip, self).render(self.mx*self.CHIPSIZE, self.my*self.CHIPSIZE)    
+        return self._can_walk
         
 class Wall(Chip):
     u"""壁クラス"""

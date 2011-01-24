@@ -6,20 +6,14 @@ from pywaz.input import *
 from pywaz.utils import *
 from pywaz.graphic import *
 from scenes import *
+from mapobject import *
+import settings
 
-CHIPSIZE = 24
 
-class Character(Image):
+class Character(MapObject):
+    u"""キャラクター抽象クラス"""
     _path = u"resources/image/player.png" 
     
-    u"""キャラクター抽象クラス"""
-    def __init__(self, mx, my):
-        self.mx = mx
-        self.my = my
-        self.x = mx*24
-        self.y = my*24
-        super(Character, self).__init__(x=mx*CHIPSIZE, y=my*CHIPSIZE, path=self._path)
-        
     def render(self):
         super(Character, self).render()
         
