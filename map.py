@@ -17,6 +17,9 @@ class Map(object):
         u"""マップ全体を描画"""
         pass
     
+    def set_map(self, matrix):
+        self.matrix = matrix
+    
 class Chip(Image):
     u"""チップの基底クラス"""
     self._can_walk = True
