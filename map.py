@@ -36,43 +36,32 @@ class Map(object):
         v.resize(settings.SPEED)
         obj.move(v)
         r = Vector()
-        chips = []
         x, y = Map.global_to_local(obj.x, obj.y)
         
-        if v.x > 0:
-            chips = [self.get_chip(x+1, y), self.get_chip(x+1, y+1), self.get_chip(x+1, y-1)]
-        elif v.x < 0:
-            chips = [self.get_chip(x, y), self.get_chip(x, y+1), self.get_chip(x, y-1)]
+        chips = [self.get_chip(x-1, y-1), self.get_chip(x, y-1), self.get_chip(x+1, y-1), 
+                 self.get_chip(x-1, y), self.get_chip(x, y), self.get_chip(x+1, y),
+                 self.get_chip(x-1, y+1), self.get_chip(x, y+1), self.get_chip(x+1, y+1),
+        ]
         for c in chips:
             if not c or (obj.hit_test(c) and not c.can_walk()):
                 #何かに当たってる
                 if v.x > 0:
-                    pre_chip = self.get_chip(x-1, y)
+                    pre_chip = self.get_chip(x, y)
                     if pre_chip:
-                        r.x = pre_chip.get_bounds()['xmax'] - obj.get_bounds()['xmin'] 
+                        r.x = pre_chip.get_bounds()['xmax'] - obj.get_bounds()['xmax'] 
                 elif v.x < 0:
                     pre_chip = self.get_chip(x+1, y)
                     if pre_chip:
                         r.x = pre_chip.get_bounds()['xmin'] - obj.get_bounds()['xmin'] 
-                break
-        
-        if v.y > 0:
-            chips = [self.get_chip(x, y+1), self.get_chip(x+1, y+1), self.get_chip(x-1, y+1)]
-        elif v.y < 0:
-            chips = [self.get_chip(x, y), self.get_chip(x+1, y), self.get_chip(x-1, y)]
-        for c in chips:
-            if not c or (obj.hit_test(c) and not c.can_walk()):
-                #何かに当たってる
                 if v.y > 0:
-                    pre_chip = self.get_chip(x, y-1)
+                    pre_chip = self.get_chip(x, y)
                     if pre_chip:
-                        r.y = pre_chip.get_bounds()['ymax'] - obj.get_bounds()['ymin'] 
+                        r.y = pre_chip.get_bounds()['ymax'] - obj.get_bounds()['ymax'] 
                 elif v.y < 0:
                     pre_chip = self.get_chip(x, y+1)
                     if pre_chip:
                         r.y = pre_chip.get_bounds()['ymin'] - obj.get_bounds()['ymin'] 
                 break
-        
         obj.move(r)
         return obj
         
