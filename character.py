@@ -27,7 +27,7 @@ class Mychara(Human):
         self.mx = mx
         self.my = my
         self._stone = False
-        self.hit = Rect(self.x+6,self.y+6, 12, 12)
+        #self.hit = Rect(self.x+6,self.y+6, 12, 12)
         
     def act(self):
         pass

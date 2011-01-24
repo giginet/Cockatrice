@@ -43,7 +43,7 @@ class Obj(object):
     
     def hit_test(self, obj):
         u"""当たり判定用矩形同士の当たり判定を取る"""
-        return (abs(self.hit.x - obj.hit.x) < self.hit.width + obj.hit.width) and (abs(self.hit.y - obj.hit.y) < self.hit.height + obj.hit.height)
+        return ( self.x < obj.x + obj.width ) and ( obj.x < self.x + self.width ) and ( self.y < obj.y + obj.height ) and ( obj.y < self.y + self.height )
     
     def get_bounds(self):
         u"""xmax,ymax,xmin,ymin"""

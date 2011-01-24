@@ -33,34 +33,47 @@ class Map(object):
     
     def _move(self, obj, v):
         u"""objをvの分だけ移動させる。マップチップとの当たりも取る"""
-        distance = settings.SPEED
-        x, y = Map.global_to_local(obj.x, obj.y)
-        if v.x > 0:
-            next = self.get_chip(x+1, y)
-            if next:
-                print "---------------------"
-                print next.get_bounds()['xmin']
-                print obj.get_bounds()['xmax']
-                distance = next.get_bounds()['xmin'] - obj.get_bounds()['xmax']
-        elif v.x < 0:
-            next = self.get_chip(x-1, y)
-            if next:
-                distance = next.get_bounds()['xmax'] - obj.get_bounds()['xmin']
-        if abs(distance) < v.x and not next.can_walk():
-            v.x = distance
-        
-        if v.y > 0:
-            next = self.get_chip(x, y+1)
-            if next:
-                distance = next.get_bounds()['ymin'] - obj.get_bounds()['ymax']
-        elif v.y < 0:
-            next = self.get_chip(x, y-1)
-            if next:
-                distance = next.get_bounds()['ymax'] - obj.get_bounds()['ymin']
-        if abs(distance) < v.y and not next.can_walk():
-            v.y = distance
         v.resize(settings.SPEED)
         obj.move(v)
+        r = Vector()
+        chips = []
+        distance = 0
+        x, y = Map.global_to_local(obj.x, obj.y)
+        if v.x > 0:
+            n = self.get_chip(x+1, y)
+            chips = [self.get_chip(x+1, y), self.get_chip(x+1, y+1), self.get_chip(x+1, y-1)]
+            if n:
+                distance = n.get_bounds()['xmin'] - obj.get_bounds()['xmax']
+        elif v.x < 0:
+            chips = [self.get_chip(x, y), self.get_chip(x, y+1), self.get_chip(x, y-1)]
+            n = self.get_chip(x+1, y)
+            if n:
+                distance = n.get_bounds()['xmax'] - obj.get_bounds()['xmin']
+        flag = True
+        for c in chips:
+            if not c or (obj.hit_test(c) and not c.can_walk()):
+                flag = False
+        if not flag:
+            r.x = distance
+        distance = 0
+        if v.y > 0:
+            chips = [self.get_chip(x, y+1), self.get_chip(x+1, y+1), self.get_chip(x-1, y+1)]
+            n = self.get_chip(x, y+1)
+            if n:
+                distance = n.get_bounds()['ymin'] - obj.get_bounds()['ymax']
+        elif v.y < 0:
+            chips = [self.get_chip(x, y), self.get_chip(x+1, y), self.get_chip(x-1, y)]
+            n = self.get_chip(x, y+1)
+            if n:
+                distance = n.get_bounds()['ymax'] - obj.get_bounds()['ymin']
+        flag = True
+        for c in chips:
+            if not c or (obj.hit_test(c) and not c.can_walk()):
+                flag = False
+        if not flag:
+            r.y = distance
+        
+        obj.move(r)
         return obj
         
     
