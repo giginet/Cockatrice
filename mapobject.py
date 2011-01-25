@@ -34,3 +34,7 @@ class MapObject(Image):
         self.mx = int((self.x - settings.MARGINX)/settings.CHIPSIZE)
         self.my = int((self.y - settings.MARGINY)/settings.CHIPSIZE)
         
+    def get_center(self):
+        u"""中心座標を返す"""
+        return self.x + self.width/2 , self.y + self.height/2
+        

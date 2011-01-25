@@ -23,11 +23,12 @@ class Map(object):
             human = self._move(human,v)
             human.act()
             if self.my.hit_test(human) and human.is_stone():
-                self.humans[i] = human.change_state("runaway")
+                human = human.change_state("runaway")
+                self.humans[i] = human
+                human.get_route(self)
             
     def _move(self, obj, v):
         u"""objをvの分だけ移動させる。マップチップとの当たりも取る"""
-        v.resize(settings.SPEED)
         obj.move(v)
         r = Vector()
         x, y = Map.global_to_local(obj.x, obj.y)
@@ -73,7 +74,7 @@ class Map(object):
 
     def generate_map(self, matrix):
         u"""生の配列を元にマップを生成する
-        可読性のため、row_matrixは転置行列である"""
+        生データ入力時の可読性のため、row_matrixは転置行列である"""
         self._raw_matrix = matrix
         self._map = []
         cls = (Floor,Wall,Water)
@@ -82,12 +83,19 @@ class Map(object):
             for x, k in enumerate(row):
                 column.append(cls[k](x,y))
             self._map.append(column)
+        u"""このままでは、x,yの位置関係が真逆であり、使用しにくいため、行列を転置する
+        http://d.hatena.ne.jp/xon/20090327/1238133267 Pythonクックブック参照
+        """
+        self._map = map(list, zip(*self._map))
             
     def get_chip(self,x ,y):
         try:
-            return self._map[y][x]
+            return self._map[x][y]
         except:
             return None
+        
+    def get_map(self):
+        return self._map
     
     @classmethod
     def local_to_global(cls, mx, my):

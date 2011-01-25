@@ -85,6 +85,15 @@ class Vector(object):
     def to_pos(self):
         return (self.x, self.y)
     
+    def divide(self, length):
+        times = int(self.length()/length)
+        mod = self.length()-length*times
+        vs = []
+        for i in range(times):
+            vs.append(self.clone().resize(length))
+        vs.append(self.clone().resize(mod))
+        return vs
+    
     @classmethod
     def rad_to_deg(cls, rad):
         return rad*180/math.pi

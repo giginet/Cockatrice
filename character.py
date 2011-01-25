@@ -7,6 +7,7 @@ from pywaz.utils import *
 from pywaz.graphic import *
 from scenes import *
 from mapobject import *
+from astar import *
 import settings
 
 
@@ -31,6 +32,9 @@ class Human(Character):
     def is_mychara(self):
         return isinstance(self, Mychara)
     
+    def is_runaway(self):
+        return not self.is_mychara() and not self.is_stone()
+    
     def change_state(self, state):
         if state=="player":
             return Mychara(self.mx, self.my)
@@ -45,9 +49,17 @@ class Runaway(Human):
     u"""石化から解かれた人クラス"""
     _path = u"resources/image/human.png"
     
+    def get_route(self, map):
+        astar = AStar(map, self.mx, self.my)
+        self.vectors = astar.get_route() 
+    
     def get_vector(self):
         u"""ここにA-star実装するよ！"""
-        return Vector(1,0)
+        if self.vectors and len(self.vectors) > 0:
+            v = self.vectors[0]
+            self.vectors = self.vectors[1:]
+            return v
+        return Vector(0,1)
 
 class Stone(Human): 
     u"""石化している人クラス"""
@@ -75,6 +87,7 @@ class Mychara(Human):
             v.y -=1
         elif Key.is_press(K_DOWN):
             v.y +=1
+        v.resize(settings.SPEED)
         return v
     
     def act(self):
